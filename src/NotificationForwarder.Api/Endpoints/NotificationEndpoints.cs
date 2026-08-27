@@ -11,13 +11,19 @@ public static class NotificationEndpoints
     }
 
 
-    private static async Task<IResult> Handle()
+    private static async Task<IResult> Handle(
+        NotificationRequest request,
+        NotificationProcessor Processor,
+        CancellationToken cancellationToken)
     {
-        // Handle the notification here
-        await Task.Delay(100); // Simulate some async work
-        return Results.Ok(new NotificationResult(
-            true,
-            "Notification processed successfully",
-            NotificationProcessingOutcome.Forwarded));
+        var result  = await Processor.Process(request, cancellationToken);
+        return result.Outcome switch
+        {
+            NotificationProcessingOutcome.Informational => Results.Ok(result),
+            NotificationProcessingOutcome.Forwarded => Results.Ok(result),
+            NotificationProcessingOutcome.InvalidLevel => Results.BadRequest(result),
+            NotificationProcessingOutcome.RateLimited => Results.Json(result, statusCode: StatusCodes.Status429TooManyRequests),
+            _ => Results.Problem("Unknown outcome", statusCode: StatusCodes.Status500InternalServerError),
+        };
     }
 }
