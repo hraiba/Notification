@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="../NotificationForwarder.Application/NotificationForwarder.Application.csproj" />
+    <ProjectReference Include="../NotificationForwarder.Inftastructure/NotificationForwarder.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

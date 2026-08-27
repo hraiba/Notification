@@ -1,18 +1,40 @@
+using NotificationForwarder.Application.Contracts;
 using NotificationForwarder.Application.Models;
 
-public sealed class NotificationProcessor
+public sealed class NotificationProcessor(IDiscordNotifier discordNotifier) 
 {
+    private readonly IDiscordNotifier _discordNotifier = discordNotifier;
     public async Task<NotificationResult> Process(
         NotificationRequest request,
         CancellationToken cancellationToken)
     {
-        // Simulate some processing logic
-        await Task.Delay(100, cancellationToken); // Simulate async work
-
-        // For demonstration, we assume the notification is always forwarded successfully
+        return Enum.TryParse<NotificationLevel>(request.Level, true, out var level)
+            ? level switch
+            {
+                NotificationLevel.Info => new NotificationResult(
+                    false,
+                    "Informational notifications are not forwarded.",
+                    NotificationProcessingOutcome.Informational),
+                NotificationLevel.Warning or
+                NotificationLevel.Error or
+                NotificationLevel.Critical => await Forward(request, cancellationToken),
+                _ => new NotificationResult(
+                    false,
+                    $"Invalid notification level: {request.Level}",
+                    NotificationProcessingOutcome.InvalidLevel)
+            }
+            : new NotificationResult(
+                false,
+                $"Level must be on of: {string.Join(", ", Enum.GetNames<NotificationLevel>())}",
+                NotificationProcessingOutcome.InvalidLevel);
+    }
+    private async Task<NotificationResult> Forward(NotificationRequest request, CancellationToken cancellationToken)
+    {
+        var alert = $"[{request.Level}] {request.Message}";
+        await _discordNotifier.NotifyAsync(alert, cancellationToken);
         return new NotificationResult(
             true,
-            "Notification processed successfully",
+            "Notification forwarded successfully.",
             NotificationProcessingOutcome.Forwarded);
     }
 }

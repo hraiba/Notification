@@ -1,4 +1,6 @@
 using NotificationForwarder.Api.Endpoints;
+using NotificationForwarder.Application.Contracts;
+using NotificationForwarder.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -6,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 builder.Services.AddTransient<NotificationProcessor>();
+builder.Services.AddTransient<IDiscordNotifier, DiscordNotifier>();
 
 var app = builder.Build();
 

@@ -15,3 +15,15 @@ Content-Type: application/json
   "message": "Version 1.0.0 was deployed successfully.",
   "source": "release-pipeline"
 }
+
+### Warning notification: requires Discord:WebhookUrl configuration. The LLM response is currently mocked.
+POST {{NotificationForwarder_Api_HostAddress}}/notifications
+Content-Type: application/json
+
+{
+  "level": "warning",
+  "title": "Disk space is low",
+  "message": "Only 5% remains on /var/lib/data.",
+  "source": "database-01",
+  "occurredAt": "2026-08-27T10:00:00Z"
+}
