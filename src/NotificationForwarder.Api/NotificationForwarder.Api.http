@@ -1,0 +1,11 @@
+@NotificationFrowarder.Api_HostAddress = http://localhost:5229
+
+GET {{NotificationForwarder.Api_HostAddress}}/openapi/v1.json
+Accept: application/json
+
+###
+
+GET {{NotificationForwarder.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
