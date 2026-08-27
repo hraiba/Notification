@@ -11,6 +11,7 @@ builder.Services.AddTransient<NotificationProcessor>();
 builder.Services.AddHttpClient<IDiscordNotifier, DiscordNotifier>(
     client => client.Timeout = TimeSpan.FromSeconds(30)
 );
+builder.Services.AddScoped<ILLMAlertGenerator, OpenAiLlmAlertGenerator>();
 
 var app = builder.Build();
 

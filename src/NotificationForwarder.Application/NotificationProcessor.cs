@@ -1,9 +1,13 @@
 using NotificationForwarder.Application.Contracts;
 using NotificationForwarder.Application.Models;
 
-public sealed class NotificationProcessor(IDiscordNotifier discordNotifier) 
+public sealed class NotificationProcessor(
+    IDiscordNotifier discordNotifier,
+    ILLMAlertGenerator llmAlertGenerator)
 {
     private readonly IDiscordNotifier _discordNotifier = discordNotifier;
+    private readonly ILLMAlertGenerator _llmAlertGenerator = llmAlertGenerator;
+
     public async Task<NotificationResult> Process(
         NotificationRequest request,
         CancellationToken cancellationToken)
@@ -30,8 +34,8 @@ public sealed class NotificationProcessor(IDiscordNotifier discordNotifier)
     }
     private async Task<NotificationResult> Forward(NotificationRequest request, CancellationToken cancellationToken)
     {
-        var alert = $"[{request.Level}] {request.Message}";
-        await _discordNotifier.NotifyAsync(alert, cancellationToken);
+        var alert = await _llmAlertGenerator.GenerateAlert(request, cancellationToken);
+        await _discordNotifier.NotifyAsync(alert.Message, cancellationToken);
         return new NotificationResult(
             true,
             "Notification forwarded successfully.",
