@@ -1,11 +1,17 @@
-@NotificationForwarder.Api_HostAddress = http://localhost:5229
 
-GET {{NotificationForwarder.Api_HostAddress}}/openapi/v1.json
+@NotificationForwarder_Api_HostAddress = http://localhost:5229
+
+### Health check
+GET {{NotificationForwarder_Api_HostAddress}}/health
 Accept: application/json
 
-###
+### Informational notification: accepted without calling the LLM or Discord
+POST {{NotificationForwarder_Api_HostAddress}}/notifications
+Content-Type: application/json
 
-GET {{NotificationForwarder.Api_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
+{
+  "level": "info",
+  "title": "Deployment completed",
+  "message": "Version 1.0.0 was deployed successfully.",
+  "source": "release-pipeline"
+}

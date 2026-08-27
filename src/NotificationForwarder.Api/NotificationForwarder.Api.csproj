@@ -10,4 +10,8 @@
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="11.0.0-preview.6.26359.118" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="../NotificationForwarder.Application/NotificationForwarder.Application.csproj" />
+  </ItemGroup>
+
 </Project>
