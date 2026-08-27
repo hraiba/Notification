@@ -1,6 +1,8 @@
 <Solution>
   <Folder Name="/src/">
     <Project Path="src/NotificationForwarder.Api/NotificationForwarder.Api.csproj" />
+    <Project Path="src/NotificationForwarder.Application/NotificationForwarder.Application.csproj" />
+    <Project Path="src/NotificationForwarder.Inftastructure/NotificationForwarder.Inftastructure.csproj" />
     <Project Path="src/NotificationForwarder.Tests/NotificationForwarder.Tests.csproj" />
   </Folder>
 </Solution>
