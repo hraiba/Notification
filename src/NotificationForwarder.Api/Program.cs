@@ -3,6 +3,7 @@ using NotificationForwarder.Api.Endpoints;
 using NotificationForwarder.Application.Contracts;
 using NotificationForwarder.Infrastructure;
 using NotificationForwarder.Infrastructure.Settings;
+using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.Configure<DiscordSettings>(builder.Configuration.GetSection("Discord"));
@@ -27,13 +28,15 @@ builder.Services.AddSingleton<IOutboundRateLimiter, OutboundRateLimiter>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+if (app.Environment.EnvironmentName == "Local")
 {
     app.MapOpenApi();
+    app.MapScalarApiReference();
 }
 
 app.MapNotificationEndpoints();
 app.MapGet("/health", () => Results.Ok("Healthy"));
 
+app.UseHttpsRedirection();
 app.Run();
 
