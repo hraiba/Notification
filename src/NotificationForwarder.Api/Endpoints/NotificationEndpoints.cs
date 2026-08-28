@@ -66,6 +66,6 @@ public static class NotificationEndpoints
     }
     private static bool IsValidLevel(string level)
     {
-        return level is "info" or "warning" or "error";
+        return Enum.TryParse<NotificationLevel>(level, true, out _);
     }
 }

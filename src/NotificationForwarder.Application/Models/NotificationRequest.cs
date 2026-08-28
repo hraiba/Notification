@@ -1,8 +1,10 @@
+using System.Text.Json.Serialization;
+
 namespace NotificationForwarder.Application.Models;
 
 public sealed record NotificationRequest(
-    string Title,
-    string Message,
-    string Level,
-    string? Source = null,
-    DateTimeOffset? Timestamp = null);
+   [property:JsonPropertyName("title")] string Title,
+   [property:JsonPropertyName("message")] string Message,
+   [property:JsonPropertyName("level")] string Level,
+   [property:JsonPropertyName("source")] string? Source = null,
+   [property:JsonPropertyName("timestamp")] DateTimeOffset? Timestamp = null);
