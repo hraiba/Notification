@@ -22,6 +22,8 @@ builder.Services.AddHttpClient<ILlmAlertGenerator, OpenAiLlmAlertGenerator>(
     }
 );
 
+builder.Services.AddSingleton<IOutboundRateLimiter, OutboundRateLimiter>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

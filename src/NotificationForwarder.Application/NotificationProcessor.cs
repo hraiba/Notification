@@ -3,10 +3,12 @@ using NotificationForwarder.Application.Models;
 
 public sealed class NotificationProcessor(
     IDiscordNotifier discordNotifier,
-    ILlmAlertGenerator llmAlertGenerator)
+    ILlmAlertGenerator llmAlertGenerator,
+    IOutboundRateLimiter ratelimiter)
 {
     private readonly IDiscordNotifier _discordNotifier = discordNotifier;
     private readonly ILlmAlertGenerator _llmAlertGenerator = llmAlertGenerator;
+    private readonly IOutboundRateLimiter _ratelimiter = ratelimiter;
 
     public async Task<NotificationResult> Process(
         NotificationRequest request,
@@ -19,6 +21,14 @@ public sealed class NotificationProcessor(
                     false,
                     "Informational notifications are not forwarded.",
                     NotificationProcessingOutcome.Informational),
+
+
+                NotificationLevel.Warning or
+                NotificationLevel.Error or
+                NotificationLevel.Critical when !_ratelimiter.TryAcquire() => new NotificationResult(
+                    false,
+                    "Rate limit exceeded. Please try again later.",
+                    NotificationProcessingOutcome.RateLimited),
                 NotificationLevel.Warning or
                 NotificationLevel.Error or
                 NotificationLevel.Critical => await Forward(request, cancellationToken),
