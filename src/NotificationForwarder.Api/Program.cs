@@ -37,7 +37,11 @@ if (app.Environment.EnvironmentName == "Local")
 
 app.MapNotificationEndpoints();
 app.MapGet("/health", () => Results.Ok("Healthy"));
-
-app.UseHttpsRedirection();
+// Only redirect to HTTPS in non-local environments
+//we need this for the script to be able to call the endpoint without dealing with SSL issues in local development
+if (app.Environment.EnvironmentName != "Local")
+{
+    app.UseHttpsRedirection();
+}
 app.Run();
 

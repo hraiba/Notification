@@ -23,7 +23,7 @@ echo "Sending ${request_count} warning notifications concurrently to ${base_url}
 for request_number in $(seq 1 "${request_count}"); do
   (
     payload=$(printf '{"level":"warning","title":"Rate-limit test %s","message":"Automated rate-limit verification.","source":"rate-limit-script"}' "${request_number}")
-    status_code=$(curl --silent --output "${results_directory}/${request_number}.json" --write-out '%{http_code}' \
+    status_code=$(curl -k --insecure --silent --output "${results_directory}/${request_number}.json" --write-out '%{http_code}' \
       --connect-timeout 5 \
       --max-time 45 \
       --header 'Content-Type: application/json' \
