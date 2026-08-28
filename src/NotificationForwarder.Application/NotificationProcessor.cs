@@ -3,10 +3,10 @@ using NotificationForwarder.Application.Models;
 
 public sealed class NotificationProcessor(
     IDiscordNotifier discordNotifier,
-    ILLMAlertGenerator llmAlertGenerator)
+    ILlmAlertGenerator llmAlertGenerator)
 {
     private readonly IDiscordNotifier _discordNotifier = discordNotifier;
-    private readonly ILLMAlertGenerator _llmAlertGenerator = llmAlertGenerator;
+    private readonly ILlmAlertGenerator _llmAlertGenerator = llmAlertGenerator;
 
     public async Task<NotificationResult> Process(
         NotificationRequest request,
