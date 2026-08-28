@@ -1,4 +1,5 @@
 using System.Net;
+using System.Net.Http.Json;
 using FakeItEasy;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
