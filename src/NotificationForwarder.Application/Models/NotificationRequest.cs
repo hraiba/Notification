@@ -5,5 +5,4 @@ public sealed record NotificationRequest(
     string Message,
     string Level,
     string? Source = null,
-    DateTimeOffset? Timestamp = null
-);
+    DateTimeOffset? Timestamp = null);

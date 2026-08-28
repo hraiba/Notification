@@ -1,5 +1,4 @@
 using FakeItEasy;
-using NotificationForwarder.Application;
 using NotificationForwarder.Application.Contracts;
 using NotificationForwarder.Application.Models;
 
@@ -21,7 +20,7 @@ public sealed class NotificationProcessorTests
         Assert.False(result.Forwarded);
         A.CallTo(() => rateLimiter.TryAcquire()).MustNotHaveHappened();
         A.CallTo(() => generator.GenerateAlert(A<NotificationRequest>._, A<CancellationToken>._)).MustNotHaveHappened();
-        A.CallTo(() => notifier.NotifyAsync(A<string>._, A<CancellationToken>._)).MustNotHaveHappened();
+        A.CallTo(() => notifier.Notify(A<string>._, A<CancellationToken>._)).MustNotHaveHappened();
     }
 
     [Theory]
@@ -38,7 +37,7 @@ public sealed class NotificationProcessorTests
         var notification = new NotificationRequest( Title: "Disk space", Message: "Only 5% remains", Level: level, Source: "database-01");
         A.CallTo(() => rateLimiter.TryAcquire()).Returns(true);
         A.CallTo(() => generator.GenerateAlert(notification, cancellationToken)).Returns(Task.FromResult(new GeneratedAlert("Free disk space immediately.")));
-        A.CallTo(() => notifier.NotifyAsync("Free disk space immediately.", cancellationToken)).Returns(Task.CompletedTask);
+        A.CallTo(() => notifier.Notify("Free disk space immediately.", cancellationToken)).Returns(Task.CompletedTask);
         var processor = new NotificationProcessor( notifier, generator, rateLimiter);
 
         var result = await processor.Process(notification, cancellationToken);
@@ -47,7 +46,7 @@ public sealed class NotificationProcessorTests
         Assert.True(result.Forwarded);
         A.CallTo(() => rateLimiter.TryAcquire()).MustHaveHappenedOnceExactly();
         A.CallTo(() => generator.GenerateAlert(notification, cancellationToken)).MustHaveHappenedOnceExactly();
-        A.CallTo(() => notifier.NotifyAsync("Free disk space immediately.", cancellationToken)).MustHaveHappenedOnceExactly();
+        A.CallTo(() => notifier.Notify("Free disk space immediately.", cancellationToken)).MustHaveHappenedOnceExactly();
     }
 
     [Fact]
@@ -64,7 +63,7 @@ public sealed class NotificationProcessorTests
         Assert.Equal(NotificationProcessingOutcome.RateLimited, result.Outcome);
         Assert.False(result.Forwarded);
         A.CallTo(() => generator.GenerateAlert(A<NotificationRequest>._, A<CancellationToken>._)).MustNotHaveHappened();
-        A.CallTo(() => notifier.NotifyAsync(A<string>._, A<CancellationToken>._)).MustNotHaveHappened();
+        A.CallTo(() => notifier.Notify(A<string>._, A<CancellationToken>._)).MustNotHaveHappened();
     }
 
     [Fact]
@@ -81,6 +80,6 @@ public sealed class NotificationProcessorTests
         Assert.False(result.Forwarded);
         A.CallTo(() => rateLimiter.TryAcquire()).MustNotHaveHappened();
         A.CallTo(() => generator.GenerateAlert(A<NotificationRequest>._, A<CancellationToken>._)).MustNotHaveHappened();
-        A.CallTo(() => notifier.NotifyAsync(A<string>._, A<CancellationToken>._)).MustNotHaveHappened();
+        A.CallTo(() => notifier.Notify(A<string>._, A<CancellationToken>._)).MustNotHaveHappened();
     }
 }

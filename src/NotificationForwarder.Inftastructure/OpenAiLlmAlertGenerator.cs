@@ -1,4 +1,3 @@
-using System;
 using System.Text.Json;
 using Microsoft.Extensions.Options;
 using NotificationForwarder.Application.Contracts;
@@ -58,6 +57,7 @@ public class OpenAiLlmAlertGenerator(
                         .GetProperty("message")
                         .GetProperty("content")
                         .GetString();
+
         if (string.IsNullOrWhiteSpace(message))
         { 
             throw new HttpRequestException("The LLM returned an empty alert message.");

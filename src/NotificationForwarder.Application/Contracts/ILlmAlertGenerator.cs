@@ -1,4 +1,3 @@
-using System;
 using NotificationForwarder.Application.Models;
 
 namespace NotificationForwarder.Application.Contracts;

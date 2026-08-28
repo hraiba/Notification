@@ -72,14 +72,14 @@ public sealed class NotificationFailureEndpointTests
     private static IDiscordNotifier SuccessfulNotifier()
     {
         var notifier = A.Fake<IDiscordNotifier>();
-        A.CallTo(() => notifier.NotifyAsync(A<string>._, A<CancellationToken>._)).Returns(Task.CompletedTask);
+        A.CallTo(() => notifier.Notify(A<string>._, A<CancellationToken>._)).Returns(Task.CompletedTask);
         return notifier;
     }
 
     private static IDiscordNotifier ThrowingNotifier(Exception exception)
     {
         var notifier = A.Fake<IDiscordNotifier>();
-        A.CallTo(() => notifier.NotifyAsync(A<string>._, A<CancellationToken>._)).Returns(Task.FromException(exception));
+        A.CallTo(() => notifier.Notify(A<string>._, A<CancellationToken>._)).Returns(Task.FromException(exception));
         return notifier;
     }
 }

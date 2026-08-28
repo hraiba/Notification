@@ -1,4 +1,3 @@
-using System;
 using System.Threading.RateLimiting;
 using NotificationForwarder.Application.Contracts;
 
@@ -9,7 +8,7 @@ public class OutboundRateLimiter : IOutboundRateLimiter, IDisposable
     private readonly SlidingWindowRateLimiter _rateLimiter = new(new SlidingWindowRateLimiterOptions
     {
         PermitLimit = 10,
-        Window = TimeSpan.FromSeconds(1),
+        Window = TimeSpan.FromMinutes(1),
         SegmentsPerWindow = 1,
         QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
         QueueLimit = 0

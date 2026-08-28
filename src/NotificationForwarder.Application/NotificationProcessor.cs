@@ -45,7 +45,7 @@ public sealed class NotificationProcessor(
     private async Task<NotificationResult> Forward(NotificationRequest request, CancellationToken cancellationToken)
     {
         var alert = await _llmAlertGenerator.GenerateAlert(request, cancellationToken);
-        await _discordNotifier.NotifyAsync(alert.Message, cancellationToken);
+        await _discordNotifier.Notify(alert.Message, cancellationToken);
         return new NotificationResult(
             true,
             "Notification forwarded successfully.",

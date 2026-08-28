@@ -21,7 +21,7 @@ public sealed class NotificationEndpointTests(NotificationApplicationFactory fac
         var response = await client.PostAsJsonAsync("/notifications", new NotificationRequest("Deployment", "Completed", "info"));
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        A.CallTo(() => factory.Notifier.NotifyAsync(A<string>._, A<CancellationToken>._)).MustNotHaveHappened();
+        A.CallTo(() => factory.Notifier.Notify(A<string>._, A<CancellationToken>._)).MustNotHaveHappened();
         A.CallTo(() => factory.Generator.GenerateAlert(A<NotificationRequest>._, A<CancellationToken>._)).MustNotHaveHappened();
     }
 
@@ -33,7 +33,7 @@ public sealed class NotificationEndpointTests(NotificationApplicationFactory fac
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         A.CallTo(() => factory.Generator.GenerateAlert(A<NotificationRequest>.That.Matches(notification => notification.Title == "Disk space"), A<CancellationToken>._)).MustHaveHappenedOnceExactly();
-        A.CallTo(() => factory.Notifier.NotifyAsync("Investigate: Disk space", A<CancellationToken>._)).MustHaveHappenedOnceExactly();
+        A.CallTo(() => factory.Notifier.Notify("Investigate: Disk space", A<CancellationToken>._)).MustHaveHappenedOnceExactly();
     }
 
     [Fact]
@@ -55,7 +55,7 @@ public sealed class NotificationApplicationFactory : WebApplicationFactory<Progr
     public NotificationApplicationFactory()
     {
         A.CallTo(() => Generator.GenerateAlert(A<NotificationRequest>._, A<CancellationToken>._)).Returns(Task.FromResult(new GeneratedAlert("Investigate: Disk space")));
-        A.CallTo(() => Notifier.NotifyAsync(A<string>._, A<CancellationToken>._)).Returns(Task.CompletedTask);
+        A.CallTo(() => Notifier.Notify(A<string>._, A<CancellationToken>._)).Returns(Task.CompletedTask);
         A.CallTo(() => RateLimiter.TryAcquire()).Returns(true);
     }
 

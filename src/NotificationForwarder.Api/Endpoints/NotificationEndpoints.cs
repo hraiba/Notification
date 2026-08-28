@@ -4,9 +4,10 @@ namespace NotificationForwarder.Api.Endpoints;
 
 public static class NotificationEndpoints
 {
+    const string route = "/notifications";
     public static IEndpointRouteBuilder MapNotificationEndpoints(this IEndpointRouteBuilder endpoints)
     {
-        endpoints.MapPost("/notifications", Handle);
+        endpoints.MapPost(route, Handle);
         return endpoints;
     }
 

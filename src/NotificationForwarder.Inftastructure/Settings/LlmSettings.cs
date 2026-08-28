@@ -1,5 +1,3 @@
-using System;
-
 namespace NotificationForwarder.Infrastructure.Settings;
 
 public record LlmSettings

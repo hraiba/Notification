@@ -44,6 +44,6 @@ public sealed class DiscordNotifierWireMockTests
             var options = Options.Create(new DiscordSettings { WebhookUrl = webhookUrl });
             var notifier = new DiscordNotifier(httpClient, options);
 
-            await notifier.NotifyAsync("Database alert", CancellationToken.None);
+            await notifier.Notify("Database alert", CancellationToken.None);
     }
 }

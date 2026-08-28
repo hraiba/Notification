@@ -1,4 +1,3 @@
-using System;
 using Microsoft.Extensions.Options;
 using NotificationForwarder.Application.Contracts;
 using NotificationForwarder.Infrastructure.Settings;
@@ -7,12 +6,11 @@ namespace NotificationForwarder.Infrastructure;
 
 public sealed class DiscordNotifier(
     HttpClient httpClient,
-    IOptions<DiscordSettings> options
-) : IDiscordNotifier
+    IOptions<DiscordSettings> options) : IDiscordNotifier
 {
     private readonly HttpClient _httpClient = httpClient;
     private readonly DiscordSettings _settings = options.Value;
-    public async Task NotifyAsync(string message, CancellationToken cancellationToken = default)
+    public async Task Notify(string message, CancellationToken cancellationToken = default)
     {
         var webhookUrl = _settings.WebhookUrl;
         ArgumentNullException.ThrowIfNull(webhookUrl, nameof(webhookUrl));
