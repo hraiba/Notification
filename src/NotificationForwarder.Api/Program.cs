@@ -20,6 +20,7 @@ builder.Services.AddHttpClient<ILlmAlertGenerator, OpenAiLlmAlertGenerator>(
         var settings = sp.GetRequiredService<IOptions<LlmSettings>>().Value;
         client.BaseAddress = new Uri(settings.Endpoint);
         client.Timeout = TimeSpan.FromSeconds(120);
+        client.DefaultRequestHeaders.Add("Authorization", $"Bearer {settings.ApiKey}");
     }
 );
 
