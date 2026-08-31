@@ -3,6 +3,7 @@ using System.Text.Json;
 using Microsoft.Extensions.Options;
 using NotificationForwarder.Application.Contracts;
 using NotificationForwarder.Application.Models;
+using NotificationForwarder.Infrastructure.OpenAIModels;
 using NotificationForwarder.Infrastructure.Settings;
 
 namespace NotificationForwarder.Infrastructure;
@@ -22,45 +23,35 @@ public class OpenAiLlmAlertGenerator(
             {
                 model = _settings.Model,
                 temperature = 0.2,
-                messages = new[] 
-                {
-                    new
-                    {
-                        role = "system",
-                        content = """
-                            You turn operational alerts into concise Discord messages. 
-                            Identify the likely category, impact, and recommended next step. 
-                            Do not invent facts. Return plain text under 1,500 characters.
-                        """
-                    },
-                    new
-                    {
-                        role = "user",
-                        content = $"""
+                instructions = """
+                                You turn operational alerts into concise Discord messages. 
+                                Identify the likely category, impact, and recommended next step. 
+                                Do not invent facts. Return plain text under 1,500 characters.
+                               """,
+                input = $"""
                             Level: {notification.Level}
                             Title: {notification.Title}
                             Source: {notification.Source ?? "unknown"}
                             Occurred at: {notification.Timestamp?.ToString("O") ?? "unknown"}
                             Details: {notification.Message}
                         """
-                    }
-                }
             })
         };
 
         var response = await _httpClient.SendAsync(request, cancellationToken);
-        response.EnsureSuccessStatusCode();
-        var content = await response.Content.ReadAsStreamAsync(cancellationToken);
-        var document = await JsonDocument.ParseAsync(content, cancellationToken: cancellationToken);
-        var message = document
-                        .RootElement
-                        .GetProperty("choices")[0]
-                        .GetProperty("message")
-                        .GetProperty("content")
-                        .GetString();
+
+        if(!response.IsSuccessStatusCode)
+        {
+            var errorContent = await response.Content.ReadAsStringAsync(cancellationToken);
+            throw new HttpRequestException($"LLM request failed with status code {response.StatusCode}: {errorContent}");
+        }
+
+        var content = await response.Content.ReadFromJsonAsync<ApiResponse>(cancellationToken);
+
+        var message = content?.GetOutputText();
 
         if (string.IsNullOrWhiteSpace(message))
-        { 
+        {
             throw new HttpRequestException("The LLM returned an empty alert message.");
         }
 
