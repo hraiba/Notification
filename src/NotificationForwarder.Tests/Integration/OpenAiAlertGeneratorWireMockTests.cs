@@ -13,8 +13,8 @@ public sealed class OpenAiAlertGeneratorWireMockTests
     public async Task GenerateAsync_UsesOpenAiCompatibleEndpointAndReturnsGeneratedMessage()
     {
         var containerBuilder = new WireMockContainerBuilder()
-            .WithAutoRemove(true)
-            .WithCleanUp(true);
+                        .WithAutoRemove(true)
+                        .WithCleanUp(true);
 
         var containerRuntimeEndpoint = Environment.GetEnvironmentVariable("DOCKER_HOST");
         if (!string.IsNullOrWhiteSpace(containerRuntimeEndpoint))
@@ -30,12 +30,12 @@ public sealed class OpenAiAlertGeneratorWireMockTests
             """
                 {
                   "Request": {
-                    "Path": { "Matchers": [{ "Name": "WildcardMatcher", "Pattern": "/v1/chat/completions" }] },
+                    "Path": { "Matchers": [{ "Name": "WildcardMatcher", "Pattern": "/v1/responses" }] },
                     "Methods": ["post"]
                   },
                   "Response": {
                     "StatusCode": 200,
-                    "Body": "{ \"choices\": [{ \"message\": { \"content\": \"Storage warning: free space is low. Clean up old backups.\" } }] }",
+                    "Body": "{ \"output\": [{ \"type\": \"message\", \"content\": [{ \"type\": \"output_text\", \"text\": \"Storage warning: free space is low. Clean up old backups.\" }] }] }",
                     "Headers": { "Content-Type": "application/json" }
                   }
                 }
@@ -46,7 +46,7 @@ public sealed class OpenAiAlertGeneratorWireMockTests
         mappingResponse.EnsureSuccessStatusCode();
 
         using var llmHttpClient = wireMock.CreateClient();
-        llmHttpClient.BaseAddress = new Uri(new Uri(wireMock.GetPublicUrl()), "v1/chat/completions");
+        llmHttpClient.BaseAddress = new Uri(new Uri(wireMock.GetPublicUrl()), "v1/responses");
         var options = Options.Create(new LlmSettings { Model = "llama3.2" });
         var generator = new OpenAiLlmAlertGenerator(llmHttpClient, options);
 
