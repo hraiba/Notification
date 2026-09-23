@@ -1,7 +1,7 @@
 # Notification Application
 ## Project Overview
 Send notifications to Discord channels when attention is needed.
-**technology**: .NET 10 minimal API, OpenAI-compatible Responses API, Discord incoming webhooks, xUnit, WireMock/Testcontainers.
+**technology**: .NET 10 minimal API, OpenAI-compatible API, Discord incoming webhooks, xUnit, WireMock/Testcontainers.
 
 # What the service does
 The service exposes a REST API Endpoint  for operational events
@@ -113,7 +113,7 @@ The ASP.NET cancellation token travels through both outbound calls, so a cancell
 
 `GET /health` returns `200 OK` with `{ "status": "ok" }`.
 
-# Rate limiting behaviour
+# Rate limiting behavior
 
 `OutboundRateLimiter` is a singleton built on .NET's `SlidingWindowRateLimiter`.
 
